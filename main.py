@@ -23,10 +23,7 @@ from tools import (
 
 load_dotenv()
 
-
-# ==========================================
 # PYDANTIC MODELS
-# ==========================================
 
 class Source(BaseModel):
     title: str
@@ -50,9 +47,7 @@ class ResearchResponse(BaseModel):
     tools_used: List[str]
 
 
-# ==========================================
 # LLM
-# ==========================================
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash",
@@ -60,18 +55,14 @@ llm = ChatGoogleGenerativeAI(
 )
 
 
-# ==========================================
 # OUTPUT PARSER
-# ==========================================
 
 parser = PydanticOutputParser(
     pydantic_object=ResearchResponse
 )
 
 
-# ==========================================
 # PROMPT
-# ==========================================
 
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -133,9 +124,7 @@ Your response MUST follow this exact schema:
 )
 
 
-# ==========================================
 # TOOLS
-# ==========================================
 
 tools = [
     search_tool,
@@ -146,10 +135,7 @@ tools = [
     memory_search_tool
 ]
 
-
-# ==========================================
 # AGENT
-# ==========================================
 
 agent = create_tool_calling_agent(
     llm=llm,
@@ -158,9 +144,7 @@ agent = create_tool_calling_agent(
 )
 
 
-# ==========================================
 # EXECUTOR
-# ==========================================
 
 agent_executor = AgentExecutor(
     agent=agent,
