@@ -3,9 +3,9 @@ from agents.evaluator_agent import evaluator_agent
 from agents.reasoning_agent import reasoning_agent
 
 
-# ============================================================
+
 # EXTRACT PAPERS
-# ============================================================
+
 
 def extract_papers(results):
 
@@ -39,9 +39,9 @@ def extract_papers(results):
 
         lines = section.splitlines()
 
-        # ----------------------------------------------------
+        
         # TITLE
-        # ----------------------------------------------------
+        
 
         if lines:
 
@@ -50,9 +50,9 @@ def extract_papers(results):
                 .strip()
             )
 
-        # ----------------------------------------------------
+        
         # PARSE METADATA
-        # ----------------------------------------------------
+        
 
         current_field = None
 
@@ -63,9 +63,9 @@ def extract_papers(results):
             if not line:
                 continue
 
-            # ------------------------------------------------
+            
             # AUTHORS
-            # ------------------------------------------------
+            
 
             if line.startswith("Authors:"):
 
@@ -81,9 +81,9 @@ def extract_papers(results):
 
                 current_field = "authors"
 
-            # ------------------------------------------------
+            
             # YEAR
-            # ------------------------------------------------
+            
 
             elif line.startswith("Year:"):
 
@@ -105,9 +105,9 @@ def extract_papers(results):
 
                 current_field = "year"
 
-            # ------------------------------------------------
+            
             # CITATION COUNT
-            # ------------------------------------------------
+            
 
             elif line.startswith(
                 "Citation Count:"
@@ -141,9 +141,9 @@ def extract_papers(results):
                             "citationCount"
                         ] = 0
 
-            # ------------------------------------------------
+            
             # ABSTRACT
-            # ------------------------------------------------
+            
 
             elif line.startswith(
                 "Abstract:"
@@ -161,9 +161,9 @@ def extract_papers(results):
 
                 current_field = "abstract"
 
-            # ------------------------------------------------
+            
             # URL
-            # ------------------------------------------------
+            
 
             elif line.startswith("URL:"):
 
@@ -179,9 +179,9 @@ def extract_papers(results):
 
                 current_field = "url"
 
-            # ------------------------------------------------
+            
             # CONTINUATION OF ABSTRACT
-            # ------------------------------------------------
+            
 
             elif current_field == "abstract":
 
@@ -189,9 +189,9 @@ def extract_papers(results):
                     " " + line
                 )
 
-            # ------------------------------------------------
+            
             # CONTINUATION OF AUTHORS
-            # ------------------------------------------------
+            
 
             elif current_field == "authors":
 
@@ -199,17 +199,17 @@ def extract_papers(results):
                     " " + line
                 )
 
-            # ------------------------------------------------
+            
             # IGNORE OTHER LINES
-            # ------------------------------------------------
+            
 
             else:
 
                 continue
 
-        # ----------------------------------------------------
+        
         # VALIDATE PAPER
-        # ----------------------------------------------------
+        
 
         if paper["title"]:
 
@@ -220,17 +220,17 @@ def extract_papers(results):
     return papers
 
 
-# ============================================================
+
 # RESEARCH ORCHESTRATOR
-# ============================================================
+
 
 def orchestrate_research(
     query: str
 ):
 
-    # --------------------------------------------------------
+    
     # 1. RETRIEVAL
-    # --------------------------------------------------------
+    
 
     retrieval_results = (
         retrieval_agent(
@@ -238,17 +238,17 @@ def orchestrate_research(
         )
     )
 
-    # --------------------------------------------------------
+    
     # 2. EXTRACT STRUCTURED PAPERS
-    # --------------------------------------------------------
+    
 
     papers = extract_papers(
         retrieval_results
     )
 
-    # --------------------------------------------------------
+    
     # 3. EVALUATION + RANKING
-    # --------------------------------------------------------
+    
 
     evaluation_results = (
         evaluator_agent(
@@ -268,9 +268,9 @@ def orchestrate_research(
         ]
     )
 
-    # --------------------------------------------------------
+    
     # 4. REASONING
-    # --------------------------------------------------------
+    
 
     reasoning_results = (
         reasoning_agent(
@@ -278,9 +278,9 @@ def orchestrate_research(
         )
     )
 
-    # --------------------------------------------------------
+    
     # 5. RETURN RESEARCH STATE
-    # --------------------------------------------------------
+    
 
     return {
 

@@ -7,9 +7,9 @@ from langchain_google_genai import (
 load_dotenv()
 
 
-# ==========================================
+
 # LLM
-# ==========================================
+
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash",
@@ -17,9 +17,9 @@ llm = ChatGoogleGenerativeAI(
 )
 
 
-# ==========================================
+
 # QUERY DECOMPOSITION AGENT
-# ==========================================
+
 
 def decomposition_agent(query):
 

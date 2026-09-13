@@ -9,9 +9,9 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 load_dotenv()
 
 
-# ==========================================
+
 # CONFIGURATION
-# ==========================================
+
 
 CURRENT_YEAR = datetime.now().year
 
@@ -20,9 +20,9 @@ MIN_QUALITY_FOR_UNDER_RECOGNIZED = 0.70
 MAX_INFLUENCE_FOR_UNDER_RECOGNIZED = 0.35
 
 
-# ==========================================
+
 # LLM
-# ==========================================
+
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash",
@@ -30,9 +30,9 @@ llm = ChatGoogleGenerativeAI(
 )
 
 
-# ==========================================
+
 # CITATION INFLUENCE
-# ==========================================
+
 
 def normalize_citations(citation_count):
 
@@ -59,9 +59,9 @@ def normalize_citations(citation_count):
     )
 
 
-# ==========================================
+
 # RECENCY SCORE
-# ==========================================
+
 
 def calculate_recency_score(year):
 
@@ -91,9 +91,9 @@ def calculate_recency_score(year):
     return 0.4
 
 
-# ==========================================
+
 # CONTENT-BASED RESEARCH EVALUATION
-# ==========================================
+
 
 def evaluate_research_content(paper):
 
@@ -118,9 +118,9 @@ def evaluate_research_content(paper):
     )
 
 
-    # ==========================================
+    
     # NO CONTENT AVAILABLE
-    # ==========================================
+    
 
     if not abstract:
 
@@ -138,9 +138,9 @@ def evaluate_research_content(paper):
         }
 
 
-    # ==========================================
+    
     # EVALUATION PROMPT
-    # ==========================================
+    
 
     prompt = f"""
 You are an expert research-methodology evaluator.
@@ -256,9 +256,9 @@ Required format:
 """
 
 
-    # ==========================================
+    
     # LLM EVALUATION
-    # ==========================================
+    
 
     try:
 
@@ -281,9 +281,9 @@ Required format:
         content = content.strip()
 
 
-        # ==========================================
+        
         # CLEAN JSON
-        # ==========================================
+        
 
         content = content.replace(
             "```json",
@@ -298,18 +298,18 @@ Required format:
         content = content.strip()
 
 
-        # ==========================================
+        
         # PARSE JSON
-        # ==========================================
+        
 
         evaluation = json.loads(
             content
         )
 
 
-        # ==========================================
+        
         # VALIDATE NUMERIC VALUES
-        # ==========================================
+        
 
         numeric_fields = [
             "methodological_rigor",
@@ -367,22 +367,22 @@ Required format:
         }
 
 
-# ==========================================
+
 # CALCULATE CREDIBILITY
-# ==========================================
+
 
 def calculate_credibility(
     paper,
     content_evaluation=None
 ):
 
-    # ------------------------------------------
+    
     # If evaluation wasn't supplied, evaluate it.
     #
     # This preserves compatibility with existing
     # code that may call calculate_credibility(paper)
     # directly.
-    # ------------------------------------------
+    
 
     if content_evaluation is None:
 
@@ -393,9 +393,9 @@ def calculate_credibility(
         )
 
 
-    # ==========================================
+    
     # GET COMPONENTS
-    # ==========================================
+    
 
     content_quality = (
         content_evaluation.get(
@@ -435,9 +435,9 @@ def calculate_credibility(
     )
 
 
-    # ==========================================
+    
     # RESEARCH QUALITY
-    # ==========================================
+    
 
     research_quality = (
         content_quality * 0.35
@@ -467,15 +467,15 @@ def calculate_credibility(
     )
 
 
-# ==========================================
+
 # EVALUATE ONE PAPER
-# ==========================================
+
 
 def evaluate_paper(paper):
 
-    # ==========================================
+    
     # ONE LLM CALL
-    # ==========================================
+    
 
     content_evaluation = (
         evaluate_research_content(
@@ -484,9 +484,9 @@ def evaluate_paper(paper):
     )
 
 
-    # ==========================================
+    
     # CALCULATE QUALITY
-    # ==========================================
+    
 
     credibility = calculate_credibility(
         paper,
@@ -494,9 +494,9 @@ def evaluate_paper(paper):
     )
 
 
-    # ==========================================
+    
     # CITATION INFLUENCE
-    # ==========================================
+    
 
     citation_influence = (
         normalize_citations(
@@ -508,9 +508,9 @@ def evaluate_paper(paper):
     )
 
 
-    # ==========================================
+    
     # ATTACH EVALUATION
-    # ==========================================
+    
 
     paper["credibility"] = (
         credibility
@@ -570,9 +570,9 @@ def evaluate_paper(paper):
     )
 
 
-    # ==========================================
+    
     # UNDER-RECOGNIZED ANALYSIS
-    # ==========================================
+    
 
     under_recognized = (
         detect_under_recognized(
@@ -603,9 +603,9 @@ def evaluate_paper(paper):
     return paper
 
 
-# ==========================================
+
 # EVALUATE MULTIPLE PAPERS
-# ==========================================
+
 
 def evaluate_papers(papers):
 
@@ -622,9 +622,9 @@ def evaluate_papers(papers):
     return evaluated
 
 
-# ==========================================
+
 # UNDER-RECOGNIZED SCORE
-# ==========================================
+
 
 def calculate_under_recognized_score(
     paper
@@ -669,9 +669,9 @@ def calculate_under_recognized_score(
     )
 
 
-# ==========================================
+
 # UNDER-RECOGNIZED DETECTOR
-# ==========================================
+
 
 def detect_under_recognized(
     paper
@@ -694,9 +694,9 @@ def detect_under_recognized(
     )
 
 
-    # ==========================================
+    
     # QUALITY THRESHOLD
-    # ==========================================
+    
 
     if quality < (
         MIN_QUALITY_FOR_UNDER_RECOGNIZED
@@ -713,9 +713,9 @@ def detect_under_recognized(
         }
 
 
-    # ==========================================
+    
     # INFLUENCE THRESHOLD
-    # ==========================================
+    
 
     if citation_influence > (
         MAX_INFLUENCE_FOR_UNDER_RECOGNIZED
@@ -732,9 +732,9 @@ def detect_under_recognized(
         }
 
 
-    # ==========================================
+    
     # FLAG AS CANDIDATE
-    # ==========================================
+    
 
     return {
         "under_recognized": True,
@@ -749,9 +749,9 @@ def detect_under_recognized(
     }
 
 
-# ==========================================
+
 # STANDARD RESEARCH RANKING
-# ==========================================
+
 
 def rank_papers(papers):
 
@@ -767,9 +767,9 @@ def rank_papers(papers):
     )
 
 
-# ==========================================
+
 # UNDER-RECOGNIZED RESEARCH RANKING
-# ==========================================
+
 
 def rank_under_recognized(
     papers

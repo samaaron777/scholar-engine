@@ -28,9 +28,9 @@ def main():
         print("PIPELINE COMPLETED")
         print("=" * 70)
 
-        # ----------------------------------------------------
+        
         # PAPERS
-        # ----------------------------------------------------
+        
 
         papers = result.get(
             "papers",
@@ -73,9 +73,9 @@ def main():
                 f"{paper.get('under_recognized')}"
             )
 
-        # ----------------------------------------------------
+        
         # UNDER-RECOGNIZED
-        # ----------------------------------------------------
+        
 
         under_recognized = result.get(
             "under_recognized",
@@ -118,9 +118,9 @@ def main():
                 f"{paper.get('under_recognized_score')}"
             )
 
-        # ----------------------------------------------------
+        
         # REASONING
-        # ----------------------------------------------------
+        
 
         reasoning = result.get(
             "reasoning",

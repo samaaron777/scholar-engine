@@ -14,9 +14,9 @@ def retrieval_agent(query: str):
     lower_query = query.lower()
 
     
-    # ==========================================
+    
     # ACADEMIC PRIORITY
-    # ==========================================
+    
 
     academic_keywords = [
         "study",
@@ -38,9 +38,9 @@ def retrieval_agent(query: str):
 
 
     
-    # ==========================================
+    
     # ACADEMIC RETRIEVAL
-    # ==========================================
+    
 
     if is_academic:
 
@@ -59,9 +59,9 @@ def retrieval_agent(query: str):
             results["arxiv"] = str(e)
 
     
-    # ==========================================
+    
     # GENERAL RETRIEVAL
-    # ==========================================
+    
 
     else:
 
@@ -81,9 +81,9 @@ def retrieval_agent(query: str):
 
 
     
-    # ==========================================
+    
     # MEMORY SEARCH
-    # ==========================================
+    
 
     try:
         results["memory"] = (
@@ -94,9 +94,9 @@ def retrieval_agent(query: str):
 
 
     
-    # ==========================================
+    
     # SUPPLEMENTAL SEARCH
-    # ==========================================
+    
 
     try:
         results["web"] = (

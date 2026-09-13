@@ -7,9 +7,9 @@ from langchain_google_genai import (
 load_dotenv()
 
 
-# ==========================================
+
 # LLM
-# ==========================================
+
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash",
@@ -17,9 +17,9 @@ llm = ChatGoogleGenerativeAI(
 )
 
 
-# ==========================================
+
 # SYNTHESIS AGENT
-# ==========================================
+
 
 def synthesis_agent(
     query,
@@ -28,9 +28,9 @@ def synthesis_agent(
 ):
 
     
-    # ==========================================
+    
     # FORMAT PAPERS
-    # ==========================================
+    
 
     papers_text = ""
 
@@ -58,9 +58,9 @@ URL:
 
 
     
-    # ==========================================
+    
     # FORMAT REASONING OUTPUT
-    # ==========================================
+    
 
     contradictions = reasoning_output.get(
         "contradictions",
@@ -99,9 +99,9 @@ Evidence Strength:
 
 
     
-    # ==========================================
+    
     # PROMPT
-    # ==========================================
+    
 
     prompt = f"""
 You are an advanced AI research analyst.
@@ -144,15 +144,15 @@ Be analytical, objective, and evidence-focused.
 
 
     
-    # ==========================================
+    
     # LLM RESPONSE
-    # ==========================================
+    
 
     response = llm.invoke(prompt)
 
     
-    # ==========================================
+    
     # RETURN FINAL SYNTHESIS
-    # ==========================================
+    
 
     return response.content
