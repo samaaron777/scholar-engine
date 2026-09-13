@@ -1,25 +1,41 @@
 from evaluator import (
-    calculate_credibility,
-    rank_papers
+    evaluate_papers,
+    rank_papers,
+    rank_under_recognized
 )
 
 
 def evaluator_agent(papers):
 
-    evaluated_papers = []
+    # --------------------------------------------------------
+    # Evaluate every retrieved paper
+    # --------------------------------------------------------
 
-    for paper in papers:
+    evaluated_papers = evaluate_papers(
+        papers
+    )
 
-        credibility = calculate_credibility(
-            paper
-        )
+    # --------------------------------------------------------
+    # Standard ranking
+    # Highest research quality first
+    # --------------------------------------------------------
 
-        paper["credibility"] = credibility
-
-        evaluated_papers.append(paper)
-
-    ranked = rank_papers(
+    ranked_papers = rank_papers(
         evaluated_papers
     )
 
-    return ranked
+    # --------------------------------------------------------
+    # Under-recognized research
+    # Strong research quality + relatively low attention
+    # --------------------------------------------------------
+
+    under_recognized_papers = (
+        rank_under_recognized(
+            evaluated_papers
+        )
+    )
+
+    return {
+        "ranked_papers": ranked_papers,
+        "under_recognized": under_recognized_papers
+    }

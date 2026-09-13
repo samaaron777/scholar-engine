@@ -1,101 +1,316 @@
 import streamlit as st
-from main import agent_executor, parser
+import json
 import os
+
 from datetime import datetime
 
+from services.orchestrator import (
+    orchestrate_research
+)
+
+
+# PAGE CONFIG
+
 st.set_page_config(
-    page_title="AI Research Copilot",
+    page_title="Scholar Engine",
     layout="wide"
 )
 
-st.title("AI Research Copilot")
-st.write("Generate structured, source-backed research summaries.")
+
+# TITLE
+
+st.title("Scholar Engine")
+
+st.markdown(
+    """
+Advanced AI Research Infrastructure
+"""
+)
+
+
+# USER INPUT
 
 query = st.text_input(
     "Enter a research topic:"
 )
 
+
+# RUN RESEARCH
+
 if st.button("Generate Report") and query:
 
-    with st.spinner("Researching..."):
+    with st.spinner(
+        "Running research pipeline..."
+    ):
 
         try:
 
-            raw_response = agent_executor.invoke(
-                {"query": query}
+            results = orchestrate_research(
+                query
             )
 
-            output = raw_response.get("output")
-
-            print("\nRAW OUTPUT:\n")
-            print(output)
-
-            structured = parser.parse(output)
-
             
-            # Display Topic
+            
+            # PAPERS
             
 
-            st.subheader("📌 Topic")
-            st.write(structured.topic)
+            st.header("Top Research Papers")
+
+            papers = results.get(
+                "papers",
+                []
+            )
+
+            for paper in papers:
+
+                st.subheader(
+                    paper.get(
+                        "title",
+                        "Unknown Title"
+                    )
+                )
+
+                st.write(
+                    f"Authors: "
+                    f"{paper.get('authors', 'Unknown')}"
+                )
+
+                st.write(
+                    f"Year: "
+                    f"{paper.get('year', 'Unknown')}"
+                )
+
+                st.write(
+                    f"Citation Count: "
+                    f"{paper.get('citationCount', 0)}"
+                )
+
+                st.write(
+                    f"Credibility Score: "
+                    f"{paper.get('credibility', 0)}"
+                )
+
+                st.write(
+                    "Abstract:"
+                )
+
+                st.write(
+                    paper.get(
+                        "abstract",
+                        "No abstract available."
+                    )
+                )
+
+                st.write(
+                    paper.get(
+                        "url",
+                        ""
+                    )
+                )
+
+                st.divider()
+
 
             
-            # Display Summary
+            # REASONING ANALYSIS
             
 
-            st.subheader("📝 Summary")
-            st.write(structured.summary)
+            reasoning = results.get(
+                "reasoning",
+                {}
+            )
+
 
             
-            # Display Key Points
+            # CONSENSUS
             
 
-            st.subheader("🔑 Key Points")
+            st.header(
+                "Consensus Analysis"
+            )
 
-            for point in structured.key_points:
-                st.write(f"- {point}")
+            consensus = reasoning.get(
+                "consensus",
+                []
+            )
 
-            
-            # Display Sources
-            
+            if consensus:
 
-            st.subheader("📚 Sources")
+                for item in consensus:
 
-            for s in structured.sources:
+                    st.write(
+                        f"• {item['title']}: "
+                        f"{item['finding']}"
+                    )
 
-                st.markdown(f"### {s.title}")
+            else:
 
-                st.write(f"Type: {s.source_type}")
-                st.write(f"Credibility: {s.credibility}")
-                st.write(s.url)
+                st.write(
+                    "No consensus patterns detected."
+                )
 
-            
-            # Display Tools Used
-            
-
-            st.subheader("🛠 Tools Used")
-
-            for tool in structured.tools_used:
-                st.write(f"- {tool}")
 
             
-            # Save Output
+            # CONTRADICTIONS
             
 
-            os.makedirs("outputs", exist_ok=True)
+            st.header(
+                "Contradictions"
+            )
+
+            contradictions = reasoning.get(
+                "contradictions",
+                []
+            )
+
+            if contradictions:
+
+                for item in contradictions:
+
+                    st.write(
+                        f"• {item['title']}: "
+                        f"{item['issue']}"
+                    )
+
+            else:
+
+                st.write(
+                    "No major contradictions detected."
+                )
+
+
+            
+            # UNCERTAINTIES
+            
+
+            st.header(
+                "Research Uncertainties"
+            )
+
+            uncertainties = reasoning.get(
+                "uncertainties",
+                []
+            )
+
+            if uncertainties:
+
+                for item in uncertainties:
+
+                    st.write(
+                        f"• {item['title']}: "
+                        f"{item['issue']}"
+                    )
+
+            else:
+
+                st.write(
+                    "No major uncertainties detected."
+                )
+
+
+            
+            # EVIDENCE STRENGTH
+            
+
+            st.header(
+                "Evidence Strength"
+            )
+
+            evidence_strength = reasoning.get(
+                "evidence_strength",
+                {}
+            )
+
+            strong_sources = evidence_strength.get(
+                "strong_sources",
+                []
+            )
+
+            weak_sources = evidence_strength.get(
+                "weak_sources",
+                []
+            )
+
+
+            # STRONG SOURCES
+
+            st.subheader(
+                "Strong Sources"
+            )
+
+            if strong_sources:
+
+                for source in strong_sources:
+
+                    st.write(
+                        f"• {source['title']} "
+                        f"(Score: "
+                        f"{source['credibility']})"
+                    )
+
+            else:
+
+                st.write(
+                    "No strong sources detected."
+                )
+
+
+            # WEAK SOURCES
+
+            st.subheader(
+                "Weak Sources"
+            )
+
+            if weak_sources:
+
+                for source in weak_sources:
+
+                    st.write(
+                        f"• {source['title']} "
+                        f"(Score: "
+                        f"{source['credibility']})"
+                    )
+
+            else:
+
+                st.write(
+                    "No weak sources detected."
+                )
+
+
+            
+            # SAVE REPORT
+        
+
+            os.makedirs(
+                "outputs",
+                exist_ok=True
+            )
 
             filename = (
-                f"outputs/report_"
+                "outputs/report_"
                 f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
             )
 
-            with open(filename, "w") as f:
-                f.write(
-                    structured.model_dump_json(indent=2)
+            with open(
+                filename,
+                "w",
+                encoding="utf-8"
+            ) as f:
+
+                json.dump(
+                    results,
+                    f,
+                    indent=2
                 )
 
-            st.success(f"Saved report to {filename}")
+            st.success(
+                f"Saved report to {filename}"
+            )
+
 
         except Exception as e:
 
-            st.error(f"Error: {e}")
+            st.error(
+                f"Error: {e}"
+            )

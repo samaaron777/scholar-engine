@@ -20,8 +20,10 @@ from services.retrieval_service import (
     semantic_scholar_search_structured
 )
 
-# SAVE TOOL
 
+# ============================================================
+# SAVE TOOL
+# ============================================================
 
 def save_to_txt(data: str):
 
@@ -49,19 +51,25 @@ save_tool = Tool(
 )
 
 
+# ============================================================
 # WEB SEARCH TOOL
+# ============================================================
 
 search = DuckDuckGoSearchRun()
 
 search_tool = Tool(
     name="search",
     func=search.run,
-    description="Search the web for supplemental information."
+    description=(
+        "Search the web for supplemental "
+        "research information."
+    )
 )
 
 
+# ============================================================
 # WIKIPEDIA TOOL
-
+# ============================================================
 
 wiki = WikipediaQueryRun(
     api_wrapper=WikipediaAPIWrapper(
@@ -72,12 +80,16 @@ wiki = WikipediaQueryRun(
 wiki_tool = wiki
 
 
+# ============================================================
 # ARXIV TOOL
+# ============================================================
 
 arxiv = ArxivQueryRun()
 
 
+# ============================================================
 # SEMANTIC SCHOLAR TOOL
+# ============================================================
 
 def semantic_scholar_search(
     query: str
@@ -95,17 +107,17 @@ def semantic_scholar_search(
 
         formatted_output.append(
             f"""
-Title: {paper['title']}
+Title:
+{paper['title']}
 
-Authors: {", ".join(paper['authors'])}
+Authors:
+{", ".join(paper['authors'])}
 
-Year: {paper['year']}
+Year:
+{paper['year']}
 
 Citation Count:
 {paper['citationCount']}
-
-Credibility Score:
-{paper['credibility']}
 
 Abstract:
 {paper['abstract']}
@@ -125,13 +137,22 @@ semantic_scholar_tool = Tool(
     func=semantic_scholar_search,
     description=(
         "Search Semantic Scholar for "
-        "high-quality academic papers."
+        "academic research papers. "
+        "Returns paper metadata, citation counts, "
+        "abstracts, and URLs. Evaluation and "
+        "credibility scoring are handled separately "
+        "by the evaluator."
     )
 )
 
-# MEMORY SEARCH TOOL
 
-def memory_search(query: str):
+# ============================================================
+# MEMORY SEARCH TOOL
+# ============================================================
+
+def memory_search(
+    query: str
+):
 
     results = search_vector_store(
         query
@@ -149,9 +170,6 @@ Title:
 Year:
 {result.metadata.get('year')}
 
-Credibility:
-{result.metadata.get('credibility')}
-
 URL:
 {result.metadata.get('url')}
 
@@ -160,7 +178,9 @@ Content:
 """
         )
 
-    return "\n\n".join(formatted)
+    return "\n\n".join(
+        formatted
+    )
 
 
 memory_search_tool = Tool(
